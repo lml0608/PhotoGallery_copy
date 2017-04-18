@@ -32,7 +32,7 @@ import java.util.List;
  * Created by lfs-ios on 2017/4/17.
  */
 
-public class PhotoGalleryFragment extends Fragment {
+public class PhotoGalleryFragment extends VisibleFragment {
 
     private static final String TAG = "PhotoGalleryFragment";
 
