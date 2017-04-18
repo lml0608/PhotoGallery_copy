@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -39,6 +40,7 @@ public class PhotoGalleryFragment extends Fragment {
 
 
     private RecyclerView mPhotoRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static Fragment newInstance() {
 
@@ -72,9 +74,42 @@ public class PhotoGalleryFragment extends Fragment {
         mPhotoRecyclerView = (RecyclerView)v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         //以网格形式显示，分3列
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
-
         setupAdapter();
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshFruits();
+            }
+        });
         return v;
+    }
+
+    private void refreshFruits() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    Thread.sleep(2000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateItems();
+                        //mAdapter.notifyDataSetChanged();
+                        //表示刷新事件结束，并隐藏刷新进度条
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
     }
 
     private void setupAdapter() {
@@ -251,4 +286,5 @@ public class PhotoGalleryFragment extends Fragment {
         }
 
     }
+
 }

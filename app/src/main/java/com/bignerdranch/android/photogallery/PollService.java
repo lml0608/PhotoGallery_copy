@@ -12,6 +12,7 @@ import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -19,8 +20,8 @@ import java.util.List;
 public class PollService extends IntentService {
     private static final String TAG = "PollService";
 
-    //private static final int POLL_INTERVAL = 1000 * 60;//60秒
-    private static final long POLL_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    private static final int POLL_INTERVAL = 1000 * 60;//60秒
+    //private static final long POLL_INTERVAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
     public static Intent newIntent(Context context) {
         return new Intent(context, PollService.class);
     }
@@ -65,6 +66,7 @@ public class PollService extends IntentService {
             Log.i(TAG, "Got an old result: " + resultId);
         }else {
             Log.i(TAG, "Got an new result: " + resultId);
+
 
             Resources resources = getResources();
 
