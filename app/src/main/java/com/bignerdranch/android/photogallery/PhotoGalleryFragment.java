@@ -1,5 +1,6 @@
 package com.bignerdranch.android.photogallery;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 
@@ -121,6 +123,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
         }
     }
 
+
     private class PhotoHolder extends RecyclerView.ViewHolder implements
             View.OnClickListener{
 
@@ -220,7 +223,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_photo_gallery, menu);
-        MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         final SearchView searchView = (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -230,7 +233,20 @@ public class PhotoGalleryFragment extends VisibleFragment {
                 Log.i(TAG, "QueryTextSubmit: " + query);
                 QueryPreference.setStoredQuery(getActivity(), query);
 
+//                searchView.clearFocus(); //可以收起键盘
+//                searchView.onActionViewCollapsed();
+
+
+                searchItem.collapseActionView();  // collapse the action view
+                View view = getActivity().getCurrentFocus();  // hide the soft keyboard
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+
                 updateItems();
+
+
                 return true;
             }
 
@@ -246,8 +262,14 @@ public class PhotoGalleryFragment extends VisibleFragment {
                 String query = QueryPreference.getStoredQuery(getActivity());
 
                 searchView.setQuery(query, false);
+
+
             }
         });
+
+
+
+
 
         MenuItem toggleItem = menu.findItem(R.id.menu_item_toggle_polling);
 
